@@ -64,3 +64,18 @@ qs2 (x:xs) =
 --                                        l   e   g
 
 
+-- List.map2 from F#
+-- http://msdn.microsoft.com/en-us/library/ee340232.aspx
+map2 :: (a -> b -> c) -> [a] -> [b] -> [c]
+map2 f _ [] = []
+map2 f [] _ = []
+map2 f (x:xs) (y:ys) = f x y : map2 f xs ys
+
+-- with accumulator.
+-- todo -- remove the extra reverse
+map2Acc :: (a -> b -> c) -> [a] -> [b] -> [c] -> [c]
+map2Acc f _ [] acc = reverse acc
+map2Acc f [] _ acc = reverse acc
+map2Acc f (x:xs) (y:ys) acc = map2Acc f xs ys ((f x y) : acc)
+
+
