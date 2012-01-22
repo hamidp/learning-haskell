@@ -78,4 +78,11 @@ map2Acc f _ [] acc = reverse acc
 map2Acc f [] _ acc = reverse acc
 map2Acc f (x:xs) (y:ys) acc = map2Acc f xs ys ((f x y) : acc)
 
+-- maxi fold
+maxfold :: Ord a => [a] -> a
+maxfold [] = error "empty"
+maxfold lst = foldr (\a b -> if a > b then a else b) f lst
+              where f = head lst
+
+
 
