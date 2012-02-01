@@ -85,4 +85,56 @@ maxfold lst = foldr (\a b -> if a > b then a else b) f lst
               where f = head lst
 
 
+-----------------------------------------------------------
+-- Tree stuff.
 
+
+data Tree a =
+  EmptyTree
+  | Node a (Tree a) (Tree a)
+  deriving (Show, Read, Eq)
+
+singleton :: a -> Tree a
+singleton x = Node x EmptyTree EmptyTree
+
+treeInsert :: (Ord a) => a -> Tree a -> Tree a
+treeInsert x EmptyTree = singleton x
+treeInsert x (Node a left right)
+  | x == a = Node x left right
+  | x < a  = Node a (treeInsert x left) right
+  | x > a  = Node a left (treeInsert x right)
+
+
+treeMember :: (Ord a) => a -> Tree a -> Bool
+treeMember x EmptyTree = False
+treeMember x (Node a left right)
+ | x == a = True
+ | x < a  = treeMember x left
+ | x > a  = treeMember x right
+
+
+data LTree a =
+    LEmptyTree
+    | LNode a [LTree a]
+    deriving (Show, Read, Eq)
+
+lsingleton :: a -> LTree a
+lsingleton x = LNode x []
+
+ltreeInsert :: (Ord a) => a -> LTree a -> LTree a
+ltreeInsert x LEmptyTree = lsingleton x
+ltreeInsert x (LNode a lst) =
+  let newl = (lsingleton x) : lst in
+  (LNode a newl)
+
+
+ltreeDepth :: LTree a -> Integer
+ltreeDepth LEmptyTree = 0
+ltreeDepth (LNode a lst) = 
+  ltreeDepthRec 0 (LNode a lst)
+  where
+    ltreeDepthRec cur LEmptyTree = cur
+    ltreeDepthRec cur (LNode x []) = cur
+    ltreeDepthRec cur (LNode x lst1) =
+      maximum $ map (ltreeDepthRec $ cur + 1) lst1
+  
